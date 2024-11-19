@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário com Mapa</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-section">
+            <label for="input1">Campo 1:</label>
+            <input type="text" id="input1">
+            <label for="input2">Campo 2:</label>
+            <input type="text" id="input2">
+            <label for="input3">Campo 3:</label>
+            <input type="text" id="input3">
+            <label for="input4">Campo 4:</label>
+            <input type="text" id="input4">
+        </div>
+
+        <div class="map-section">
+            <input type="text" id="addressInput" placeholder="Digite o endereço" />
+            <button id="searchBtn">Buscar Localização</button>
+            <div id="mapid"></div>
+            <button id="generateJsonBtn" style="display: none;">Gerar JSON</button>
+        </div>
+
+        <div class="results-section" id="results">
+            <h2>Resultados</h2>
+            <p>Os resultados aparecerão aqui.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
