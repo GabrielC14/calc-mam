@@ -93,3 +93,7 @@ button:hover {
 .results-section p {
     color: #333;
 }
+
+#titles {
+    margin-top: 10px;
+}
