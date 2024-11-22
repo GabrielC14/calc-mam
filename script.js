@@ -45,23 +45,69 @@ function searchLocation() {
         });
 }
 
-// Função para gerar o JSON com as coordenadas
-function generateJson() {
+// Função para enviar coordenadas ao servidor
+async function getRegionFromServer(lat, lon) {
+    const url = "http://127.0.0.1:5000/get-region"; // URL do servidor Flask
+
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                latitude: lat,
+                longitude: lon,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error("Erro ao se comunicar com o servidor.");
+        }
+
+        const data = await response.json();
+        return data.region;
+    } catch (error) {
+        console.error("Erro:", error);
+        return "Erro ao buscar região.";
+    }
+}
+
+// Função para exibir o resultado de maneira formatada
+function displayResult(region) {
+    const resultsSection = document.getElementById("results");
+
+    // Limpa os resultados anteriores
+    resultsSection.innerHTML = `
+        <h2>Resultados</h2>
+        <div class="result">A coordenada está localizada na região <span style="font-size: 22px; color: #007BFF;">${region}</span>.</div>
+    `;
+}
+
+// Alteração na função para gerar o JSON com a região
+async function generateJson() {
     const lat = marker.getLatLng().lat;
     const lon = marker.getLatLng().lng;
 
+    // Obtem a região correspondente do servidor Python
+    const region = await getRegionFromServer(lat, lon);
+
     const coordinates = {
         latitude: lat,
-        longitude: lon
+        longitude: lon,
+        region: region,
     };
 
     const jsonOutput = JSON.stringify(coordinates, null, 2);
 
-    const resultsSection = document.getElementById('results');
+    const resultsSection = document.getElementById("results");
     resultsSection.innerHTML = `
-        <h2>Coordenadas JSON</h2>
+        <h2>Dados com Região</h2>
         <pre>${jsonOutput}</pre>
     `;
+
+    // Exibe o resultado de forma mais bonita
+    displayResult(region);
 }
 
 // Event listeners

@@ -78,16 +78,35 @@ button:hover {
 }
 
 .results-section {
-    width: 20%;
+    margin-top: 20px;
+    width: 25%;
+    /* Ajustei para ficar mais similar à largura da .form-section */
     padding: 20px;
+    border: 1px solid #ccc;
+    /* Borda semelhante à da .form-section */
     background-color: #fff;
+    /* Cor de fundo semelhante à .form-section */
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+    /* Sombras iguais para um efeito consistente */
 }
 
 .results-section h2 {
-    margin-bottom: 15px;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: left;
+    /* Alinhado à esquerda */
+}
+
+.results-section .result {
+    font-size: 18px;
+    color: #333;
+    /* Cor preta para o texto */
+    text-align: left;
+    /* Alinhado à esquerda */
+    padding: 10px 0;
+    font-weight: bold;
 }
 
 .results-section p {
