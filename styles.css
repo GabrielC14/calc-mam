@@ -95,6 +95,10 @@ button:hover {
     text-align: left;
 }
 
+.formulas-espaco {
+    line-height: 2;
+}
+
 .results-section .result {
     font-size: 18px;
     color: #333;
