@@ -1,13 +1,8 @@
-/* Resetando margens e padding */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-
-/* Estilo do corpo da página */
 
 body {
     font-family: Arial, sans-serif;
@@ -19,18 +14,12 @@ body {
     position: relative;
 }
 
-
-/* Container principal */
-
 .container {
     display: flex;
     justify-content: space-between;
     width: 80%;
     height: 100%;
 }
-
-
-/* Estilo da seção de formulário */
 
 .form-section {
     width: 25%;
@@ -39,9 +28,6 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
-
-/* Estilo dos inputs do formulário */
 
 .form-section label {
     display: block;
@@ -56,9 +42,6 @@ body {
     border: 1px solid #ccc;
 }
 
-
-/* Estilo da seção do mapa */
-
 .map-section {
     width: 50%;
     padding: 20px;
@@ -72,9 +55,6 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-
-/* Estilo dos campos de endereço */
-
 #addressInput {
     width: 100%;
     padding: 10px;
@@ -82,9 +62,6 @@ body {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
-
-
-/* Estilo dos botões */
 
 button {
     width: 100%;
@@ -100,9 +77,6 @@ button {
 button:hover {
     background-color: #45a049;
 }
-
-
-/* Estilo da seção de resultados */
 
 .results-section {
     margin-top: 20px;

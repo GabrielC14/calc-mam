@@ -1,14 +1,11 @@
-// Inicialização do mapa com OpenStreetMap
-const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // Coordenadas iniciais para o centro de Curitiba
+const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // Coordenadas iniciais
 
-// Adiciona o tile layer (camada do mapa)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 let marker;
 
-// Função para buscar as coordenadas do endereço usando Nominatim
 function searchLocation() {
     const address = document.getElementById('addressInput').value;
 
@@ -17,16 +14,20 @@ function searchLocation() {
         return;
     }
 
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&viewbox=-74.0,-34.0,-34.0,5.3&bounded=1`;
 
     fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.length > 0) {
-                const lat = data[0].lat;
-                const lon = data[0].lon;
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
 
-                // Ajusta a posição do mapa e adiciona um marcador
+                if (lat < -34 || lat > 5.3 || lon < -74 || lon > -34) {
+                    alert('O endereço deve estar localizado no Brasil.');
+                    return;
+                }
+
                 map.setView([lat, lon], 13);
 
                 if (marker) {
@@ -35,9 +36,9 @@ function searchLocation() {
                     marker = L.marker([lat, lon]).addTo(map);
                 }
 
-                document.getElementById('generateJsonBtn').style.display = 'block'; // Exibe o botão para gerar JSON
+                document.getElementById('generateJsonBtn').style.display = 'block';
             } else {
-                alert('Endereço não encontrado.');
+                alert('Endereço não encontrado no Brasil.');
             }
         })
         .catch(error => {
@@ -45,9 +46,8 @@ function searchLocation() {
         });
 }
 
-// Função para enviar coordenadas ao servidor
-async function getRegionFromServer(lat, lon) {
-    const url = "http://127.0.0.1:5000/get-region"; // URL do servidor Flask
+async function getWindPressureFromServer(lat, lon, pavimentos) {
+    const url = "http://127.0.0.1:5000/pressaovento"; // 
 
     try {
         const response = await fetch(url, {
@@ -58,6 +58,7 @@ async function getRegionFromServer(lat, lon) {
             body: JSON.stringify({
                 latitude: lat,
                 longitude: lon,
+                pavimentos: pavimentos
             }),
         });
 
@@ -66,50 +67,46 @@ async function getRegionFromServer(lat, lon) {
         }
 
         const data = await response.json();
-        return data.region;
+        return data.pressao_vento;
     } catch (error) {
         console.error("Erro:", error);
-        return "Erro ao buscar região.";
+        return "Erro ao calcular a pressão de ensaio.";
     }
 }
 
-// Função para exibir o resultado de maneira formatada
-function displayResult(region) {
+function displayResult(pressao_vento) {
     const resultsSection = document.getElementById("results");
 
-    // Limpa os resultados anteriores
     resultsSection.innerHTML = `
-        <h2>Resultados</h2>
-        <div class="result">A coordenada está localizada na região <span style="font-size: 22px; color: #007BFF;">${region}</span>.</div>
+        <h2>Resultado</h2>
+        <div class="result">A pressão de ensaio é <span style="font-size: 22px; color: #007BFF;">${pressao_vento}</span> (kN/m²).</div>
     `;
 }
 
-// Alteração na função para gerar o JSON com a região
 async function generateJson() {
     const lat = marker.getLatLng().lat;
     const lon = marker.getLatLng().lng;
+    const pavimentos = document.getElementById('pavimentosInput').value;
 
-    // Obtem a região correspondente do servidor Python
-    const region = await getRegionFromServer(lat, lon);
+    const pressao_vento = await getWindPressureFromServer(lat, lon, pavimentos);
 
     const coordinates = {
         latitude: lat,
         longitude: lon,
-        region: region,
+        pavimentos: pavimentos,
+        pressao_vento: pressao_vento,
     };
 
     const jsonOutput = JSON.stringify(coordinates, null, 2);
 
     const resultsSection = document.getElementById("results");
     resultsSection.innerHTML = `
-        <h2>Dados com Região</h2>
+        <h2>Dados com Pressão de Ensaio</h2>
         <pre>${jsonOutput}</pre>
     `;
 
-    // Exibe o resultado de forma mais bonita
-    displayResult(region);
+    displayResult(pressao_vento);
 }
 
-// Event listeners
 document.getElementById('searchBtn').addEventListener('click', searchLocation);
 document.getElementById('generateJsonBtn').addEventListener('click', generateJson);
