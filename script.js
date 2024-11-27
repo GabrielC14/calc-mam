@@ -46,7 +46,7 @@ function searchLocation() {
         });
 }
 
-async function getWindPressureFromServer(lat, lon, pavimentos) {
+async function getWindPressureFromServer(lat, lon, pavimentos, larguratotal, quantidadefol, alturafol) {
     const url = "http://127.0.0.1:5000/pressaovento"; // 
 
     try {
@@ -58,7 +58,10 @@ async function getWindPressureFromServer(lat, lon, pavimentos) {
             body: JSON.stringify({
                 latitude: lat,
                 longitude: lon,
-                pavimentos: pavimentos
+                pavimentos: pavimentos,
+                quantidadefol: quantidadefol,
+                larguratotal: larguratotal,
+                alturafol: alturafol
             }),
         });
 
@@ -67,19 +70,26 @@ async function getWindPressureFromServer(lat, lon, pavimentos) {
         }
 
         const data = await response.json();
-        return data.pressao_vento;
+        console.log("Dados recebidos do servidor:", data); // tudo certo aqui tb
+        return{
+            pressao_ensaio: data.pressao_ensaio, 
+            wx: data.wx, 
+            jx: data.jx
+        };
     } catch (error) {
         console.error("Erro:", error);
-        return "Erro ao calcular a pressão de ensaio.";
+        return { pressao_ensaio: "Erro", wx: "Erro", jx: "Erro" };
     }
 }
 
-function displayResult(pressao_vento) {
+function displayResult(pressao_ensaio, wx, jx) {
     const resultsSection = document.getElementById("results");
 
     resultsSection.innerHTML = `
         <h2>Resultado</h2>
-        <div class="result">A pressão de ensaio é <span style="font-size: 22px; color: #007BFF;">${pressao_vento}</span> (kN/m²).</div>
+        <div class="result">A pressão de ensaio é <span style="font-size: 22px; color: #007BFF;">${pressao_ensaio}</span> Pa.</div>
+        <div class="result">A pressão de ensaio é <span style="font-size: 22px; color: #007BFF;">${wx}</span> mm4.</div>
+        <div class="result">A pressão de ensaio é <span style="font-size: 22px; color: #007BFF;">${jx}</span> mm4.</div>
     `;
 }
 
@@ -87,14 +97,23 @@ async function generateJson() {
     const lat = marker.getLatLng().lat;
     const lon = marker.getLatLng().lng;
     const pavimentos = document.getElementById('pavimentosInput').value;
+    const larguratotal = document.getElementById('larguraInput').value;
+    const quantidadefol = document.getElementById('quantidadefolInput').value;
+    const alturafol = document.getElementById('alturafolInput').value;
 
-    const pressao_vento = await getWindPressureFromServer(lat, lon, pavimentos);
+    const { pressao_ensaio, wx, jx } = await getWindPressureFromServer(lat, lon, pavimentos, larguratotal, quantidadefol, alturafol);
+    console.log("Valores recebidos:", pressao_ensaio, wx, jx); // tudo certo aqui
 
     const coordinates = {
         latitude: lat,
         longitude: lon,
         pavimentos: pavimentos,
-        pressao_vento: pressao_vento,
+        larguratotal: larguratotal,
+        quantidadefol: quantidadefol,
+        pressao_ensaio: pressao_ensaio,
+        wx: wx,
+        jx: jx,
+        alturafol: alturafol
     };
 
     const jsonOutput = JSON.stringify(coordinates, null, 2);
@@ -105,7 +124,7 @@ async function generateJson() {
         <pre>${jsonOutput}</pre>
     `;
 
-    displayResult(pressao_vento);
+    displayResult(pressao_ensaio, wx, jx);
 }
 
 document.getElementById('searchBtn').addEventListener('click', searchLocation);

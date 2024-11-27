@@ -59,20 +59,55 @@ def calcular_pressao(region, pavimentos):
     else:
         return "Região não definida"
 
+def largurafolha(larguratotal, quantidadefol):
+    return larguratotal / quantidadefol
+
+def calcular_wx(pressao_ensaio, largurafol, alturafol, lrt):
+    """
+    Limite de tensão: ( Wx )
+    (P * 10^-6 * L * H^2) / (4 * LRT)
+    """
+    return (pressao_ensaio*1e-6*largurafol*alturafol**2)/(4*lrt)
+
+def calcular_jx(pressao_ensaio, largurafol, alturafol, melast):
+    """
+    Limite de tensão: ( Jx )
+    (5*P*10^-6*L*H^4)/(H*2.1943*E)     (P*10^-6*L*H^4)/(1536*E)
+    """
+    return max(((5*pressao_ensaio*1e-6*largurafol*alturafol**4)/(alturafol*2.1943*melast)), ((pressao_ensaio*1e-6*largurafol*alturafol**4)/(1536*melast))) 
+
 @app.route('/pressaovento', methods=['POST'])
 def get_wind_pressure():
     data = request.get_json()
+    print(f"Dados recebidos: {data}") # aq ta o print excluir dps
     latitude = data['latitude']
     longitude = data['longitude']
     pavimentos = int(data['pavimentos'])
+    larguratotal = int(data['larguratotal'])
+    quantidadefol = int(data['quantidadefol'])
+    alturafol = int(data['alturafol'])
+    lrt = 150
+    melast = 70000
     point = Point(longitude, latitude)
+
+    largurafol = largurafolha(larguratotal, quantidadefol)
 
     for _, row in gdf.iterrows():
         if row['geometry'].contains(point):
-            pressao_vento = calcular_pressao(row['pressão_vento'], pavimentos)
-            return jsonify({"pressao_vento": pressao_vento})
-
+            pressao_ensaio = calcular_pressao(row['pressão_vento'], pavimentos)
+            print(f"Pressão de ensaio calculada: {pressao_ensaio}, tipo: {type(pressao_ensaio)}")
+            wx = calcular_wx(pressao_ensaio, largurafol, alturafol, lrt)
+            jx = calcular_jx(pressao_ensaio, largurafol, alturafol, melast)
+            print(f"Wx calculado: {wx}")
+            print(f"Jx calculado: {jx}")
+            return jsonify({
+                "pressao_ensaio": pressao_ensaio,
+                "largurafol": largurafol,
+                "alturafol": alturafol,
+                "wx": wx,
+                "jx": jx
+                })
+        
     return jsonify({"error": "Ponto fora de todas as regiões"}), 404
-
 if __name__ == '__main__':
     app.run(debug=True)
