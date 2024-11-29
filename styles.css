@@ -22,6 +22,7 @@ body {
 }
 
 .form-section {
+    margin-top: 20px;
     width: 25%;
     padding: 20px;
     background-color: #fff;
@@ -40,6 +41,10 @@ body {
     margin-top: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
+}
+
+.form-section h2 {
+    margin-top: 10px;
 }
 
 .map-section {
@@ -95,24 +100,16 @@ button:hover {
     text-align: left;
 }
 
-.formulas-espaco {
-    line-height: 2;
-}
-
 .results-section .result {
     font-size: 18px;
     color: #333;
     text-align: left;
     padding: 10px 0;
-    font-weight: bold;
 }
 
 .results-section p {
     color: #333;
-}
-
-#titles {
-    margin-top: 10px;
+    line-height: 2;
 }
 
 .info-button {

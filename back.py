@@ -76,37 +76,42 @@ def calcular_jx(pressao_ensaio, largurafol, alturafol, melast):
     """
     return max(((5*pressao_ensaio*1e-6*largurafol*alturafol**4)/(alturafol*2.1943*melast)), ((pressao_ensaio*1e-6*largurafol*alturafol**4)/(1536*melast))) 
 
-@app.route('/pressaovento', methods=['POST'])
+@app.route('/pressaovento', methods=['POST']) # ta pegando os dados do json pra fazer a pressao
 def get_wind_pressure():
     data = request.get_json()
     print(f"Dados recebidos: {data}") # aq ta o print excluir dps
-    latitude = data['latitude']
-    longitude = data['longitude']
-    pavimentos = int(data['pavimentos'])
-    larguratotal = int(data['larguratotal'])
-    quantidadefol = int(data['quantidadefol'])
-    alturafol = int(data['alturafol'])
-    lrt = 150
-    melast = 70000
-    point = Point(longitude, latitude)
+    latitude = data['latitude'] # mantem
+    longitude = data['longitude'] # mantem
+    pavimentos = int(data['pavimentos']) # mantem 
+    point = Point(longitude, latitude) # mantem
 
-    largurafol = largurafolha(larguratotal, quantidadefol)
+    
 
     for _, row in gdf.iterrows():
         if row['geometry'].contains(point):
             pressao_ensaio = calcular_pressao(row['pressão_vento'], pavimentos)
             print(f"Pressão de ensaio calculada: {pressao_ensaio}, tipo: {type(pressao_ensaio)}")
-            wx = calcular_wx(pressao_ensaio, largurafol, alturafol, lrt)
-            jx = calcular_jx(pressao_ensaio, largurafol, alturafol, melast)
-            print(f"Wx calculado: {wx}")
-            print(f"Jx calculado: {jx}")
-            return jsonify({
-                "pressao_ensaio": pressao_ensaio,
-                "largurafol": largurafol,
-                "alturafol": alturafol,
-                "wx": wx,
-                "jx": jx
+
+            response = {"pressao_ensaio": pressao_ensaio}
+
+            if 'larguratotal' in data and 'quantidadefol' in data and 'alturafol' in data: # ta pegando do msm json os outros dados que vieram, caso venham, pra fazer o jx e wx
+                larguratotal = int(data['larguratotal'])
+                quantidadefol = int(data['quantidadefol'])
+                alturafol = int(data['alturafol'])
+                lrt = 150
+                melast = 70000
+
+                largurafol = largurafolha(larguratotal, quantidadefol)
+                wx = calcular_wx(pressao_ensaio, largurafol, alturafol, lrt)
+                jx = calcular_jx(pressao_ensaio, largurafol, alturafol, melast)
+                print(f"Wx calculado: {wx}")
+                print(f"Jx calculado: {jx}")
+
+                response.update({ #se tiver dados pro jx e wx ele retorna isso ai
+                    "wx": wx,
+                    "jx": jx
                 })
+            return jsonify(response)
         
     return jsonify({"error": "Ponto fora de todas as regiões"}), 404
 if __name__ == '__main__':
