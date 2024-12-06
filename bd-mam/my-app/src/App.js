@@ -35,51 +35,58 @@ function App() {
         <div className="App">
             <h3>Banco de dados de resistência dos perfis</h3>
             <br></br>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        value={newItem.nome}
-                        onChange={(e) => setNewItem({ ...newItem, nome: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="função"
-                        value={newItem.função}
-                        onChange={(e) => setNewItem({ ...newItem, função: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="linha"
-                        value={newItem.linha}
-                        onChange={(e) => setNewItem({ ...newItem, linha: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="área"
-                        value={newItem.área}
-                        onChange={(e) => setNewItem({ ...newItem, área: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="jx"
-                        value={newItem.jx}
-                        onChange={(e) => setNewItem({ ...newItem, jx: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="wx"
-                        value={newItem.wx}
-                        onChange={(e) => setNewItem({ ...newItem, wx: e.target.value })}
-                        required
-                    />
-                    <button type="submit">Add Item</button>
-                </form>
+            <div>
+    <h3 class="titulo_add">Adicionar Novo Item</h3>
+    <div className="form-wrapper">
+        <form onSubmit={handleSubmit} className="form-horizontal">
+            <input
+                type="text"
+                placeholder="Nome"
+                value={newItem.nome}
+                onChange={(e) => setNewItem({ ...newItem, nome: e.target.value })}
+                required
+            />
+            <input
+                type="text"
+                placeholder="Função"
+                value={newItem.função}
+                onChange={(e) => setNewItem({ ...newItem, função: e.target.value })}
+                required
+            />
+            <input
+                type="text"
+                placeholder="Linha"
+                value={newItem.linha}
+                onChange={(e) => setNewItem({ ...newItem, linha: e.target.value })}
+                required
+            />
+            <input
+                type="number"
+                placeholder="Área"
+                value={newItem.área}
+                onChange={(e) => setNewItem({ ...newItem, área: e.target.value })}
+                required
+            />
+            <input
+                type="number"
+                placeholder="Jx"
+                value={newItem.jx}
+                onChange={(e) => setNewItem({ ...newItem, jx: e.target.value })}
+                required
+            />
+            <input
+                type="number"
+                placeholder="Wx"
+                value={newItem.wx}
+                onChange={(e) => setNewItem({ ...newItem, wx: e.target.value })}
+                required
+            />
+            <button type="submit">Adicionar</button>
+        </form>
+    </div>
+</div>
+
+
                 <br></br>
                 <table>
     <thead>

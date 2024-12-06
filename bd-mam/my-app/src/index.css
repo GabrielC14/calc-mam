@@ -15,7 +15,7 @@ header {
   background-color: #003366;
   color: white;
   padding: 10px 20px;
-  text-align: center;
+  text-align: left;
 }
 
 .container {
@@ -50,3 +50,54 @@ th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
+/* Título */
+.titulo_add{
+    margin-left: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+/* Contêiner do formulário */
+.form-wrapper {
+  background-color: rgb(242, 242, 242);
+  border: 1px solid #ddd;
+  border-radius: 8px; /* Chanfro arredondado */
+  padding: 10px;
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap; /* Não quebra linha */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Estilo dos inputs */
+.form-horizontal input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 120px;
+}
+
+.form-horizontal input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+.form-horizontal button {
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-horizontal button:hover {
+  background-color: #0056b3;
+}
+
