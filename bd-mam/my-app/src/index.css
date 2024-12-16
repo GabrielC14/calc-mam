@@ -50,42 +50,54 @@ th {
   background-color: #f2f2f2;
   font-weight: bold;
 }
-/* Título */
 .titulo_add{
     margin-left: 12px;
+    margin-bottom: 3px;
+    margin-top: 5px;
     font-size: 16px;
     font-weight: bold;
     color: #333;
 }
-/* Contêiner do formulário */
 .form-wrapper {
   background-color: rgb(242, 242, 242);
   border: 1px solid #ddd;
-  border-radius: 8px; /* Chanfro arredondado */
+  border-radius: 8px;
   padding: 10px;
   max-width: 100%;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  flex-wrap: nowrap; /* Não quebra linha */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+  flex-wrap: nowrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 15px;
 }
-
-/* Estilo dos inputs */
 .form-horizontal input {
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 4px;
-  min-width: 120px;
+  min-width: 196px;
+  margin-right: 15px;
 }
-
+.form-horizontal select {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 196px;
+  margin-right: 15px;
+  cursor: pointer;
+}
 .form-horizontal input:focus {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
-
+.form-horizontal select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
 .form-horizontal button {
   padding: 8px 16px;
   font-size: 14px;
@@ -100,4 +112,3 @@ th {
 .form-horizontal button:hover {
   background-color: #0056b3;
 }
-

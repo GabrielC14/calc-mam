@@ -46,20 +46,30 @@ function App() {
                 onChange={(e) => setNewItem({ ...newItem, nome: e.target.value })}
                 required
             />
-            <input
-                type="text"
-                placeholder="Função"
+            <select
                 value={newItem.função}
                 onChange={(e) => setNewItem({ ...newItem, função: e.target.value })}
                 required
-            />
-            <input
-                type="text"
-                placeholder="Linha"
+            >
+                <option value="" disabled>
+                    Selecione a Função
+                </option>
+                <option value="Função 1">Função 1</option>
+                <option value="Função 2">Função 2</option>
+                <option value="Função 3">Função 3</option>
+                </select>
+            <select
                 value={newItem.linha}
                 onChange={(e) => setNewItem({ ...newItem, linha: e.target.value })}
                 required
-            />
+                >
+                <option value="" disabled>
+                    Selecione a Linha
+                </option>
+                <option value="Linha A">Linha A</option>
+                <option value="Linha B">Linha B</option>
+                <option value="Linha C">Linha C</option>
+                </select>
             <input
                 type="number"
                 placeholder="Área"
