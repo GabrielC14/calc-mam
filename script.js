@@ -1,4 +1,4 @@
-const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // Coordenadas iniciais
+const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // Coordenadas iniciais (Curitiba)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -30,12 +30,7 @@ function searchLocation() {
 
                 map.setView([lat, lon], 13);
 
-                if (marker) {
-                    marker.setLatLng([lat, lon]);
-                } else {
-                    marker = L.marker([lat, lon]).addTo(map);
-                }
-
+                updateMarker(lat, lon);
                 document.getElementById('generateJsonBtn').style.display = 'block';
             } else {
                 alert('Endereço não encontrado no Brasil.');
@@ -45,6 +40,23 @@ function searchLocation() {
             console.error('Erro ao buscar endereço:', error);
         });
 }
+function updateMarker(lat, lon) {
+    if (marker) {
+        marker.setLatLng([lat, lon]);
+    } else {
+        marker = L.marker([lat, lon]).addTo(map);
+    }
+    map.setView([lat, lon]);
+}
+map.on('click', function(e) {
+    const lat = e.latlng.lat;
+    const lon = e.latlng.lng;
+
+    updateMarker(lat, lon);
+
+    document.getElementById('generateJsonBtn').style.display = 'block';
+    
+});
 
 async function getWindPressureFromServer(lat, lon, pavimentos, larguratotal, quantidadefol, alturafol) {
     const url = "http://127.0.0.1:5000/pressaovento"; // 
@@ -84,6 +96,10 @@ async function getWindPressureFromServer(lat, lon, pavimentos, larguratotal, qua
 function displayResult(pressao_ensaio, wx, jx) {
     const resultsSection = document.getElementById("results");
 
+    const wxFormatado = wx !== "N/A" ? Math.ceil(wx) : "N/A";
+
+    const jxFormatado = jx !== "N/A" ? parseInt(jx).toLocaleString('pt-BR') : "N/A";
+
     let resultHTML = `
         <h2>Resultado</h2>
         <div class="result">A pressão de ensaio é <span style="font-size: 20px; color: #007BFF;">${pressao_ensaio}</span> Pa.</div>
@@ -91,13 +107,13 @@ function displayResult(pressao_ensaio, wx, jx) {
 
     if (wx && wx !== "N/A") {
         resultHTML += `
-            <div class="result">O Módulo de Resistência à Flexão (Wx) é <span style="font-size: 20px; color: #007BFF;">${wx}</span> mm⁴.</div>
+            <div class="result">O Módulo de Resistência à Flexão (Wx) necessário é de <span style="font-size: 20px; color: #007BFF;">${wxFormatado}</span> mm⁴.</div>
         `;
     }
 
     if (jx && jx !== "N/A") {
         resultHTML += `
-            <div class="result">O Momento de Inércia (Jx) é <span style="font-size: 20px; color: #007BFF;">${jx}</span> mm⁴.</div>
+            <div class="result">O Momento de Inércia (Jx) necessário é de <span style="font-size: 20px; color: #007BFF;">${jxFormatado}</span> mm⁴.</div>
         `;
     }
 

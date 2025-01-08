@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     height: 100vh;
-    background-color: #f4f4f4;
+    background-color: #dce9f5;
     position: relative;
 }
 
@@ -71,7 +71,7 @@ body {
 button {
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #009cda;
     color: white;
     border: none;
     border-radius: 5px;
@@ -80,7 +80,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #0f98ce;
 }
 
 .results-section {
