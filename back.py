@@ -71,7 +71,7 @@ def calcular_wx(pressao_ensaio, largurafol, alturafol, lrt):
 
 def calcular_jx(pressao_ensaio, largurafol, alturafol, melast):
     """
-    Limite de tensão: ( Jx )
+    Limite de flecha: ( Jx )
     (5*P*10^-6*L*H^4)/(H*2.1943*E)     (P*10^-6*L*H^4)/(1536*E)
     """
     return max(((5*pressao_ensaio*1e-6*largurafol*alturafol**4)/(alturafol*2.1943*melast)), ((pressao_ensaio*1e-6*largurafol*alturafol**4)/(1536*melast))) 
