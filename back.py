@@ -98,8 +98,8 @@ def get_wind_pressure():
                 larguratotal = int(data['larguratotal'])
                 quantidadefol = int(data['quantidadefol'])
                 alturafol = int(data['alturafol'])
-                lrt = 150
-                melast = 70000
+                lrt = 150 # N/mm²
+                melast = 70000 # MPa
 
                 largurafol = largurafolha(larguratotal, quantidadefol)
                 wx = calcular_wx(pressao_ensaio, largurafol, alturafol, lrt)

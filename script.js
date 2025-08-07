@@ -1,4 +1,4 @@
-const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // Coordenadas iniciais (Curitiba)
+const map = L.map('mapid').setView([-25.4284, -49.2733], 13); // coordenadas iniciais
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
