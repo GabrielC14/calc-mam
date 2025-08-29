@@ -121,7 +121,7 @@ function displayResult(pressao_ensaio, wx, jx) {
     const jxFormatado = jx !== "N/A" ? parseInt(jx).toLocaleString('pt-BR') : "N/A";
     
     // Arredonda a pressão para exibir, caso seja um número
-    const pressaoFormatada = typeof pressao_ensaio === 'number' ? pressao_ensaio.toFixed(2) : pressao_ensaio;
+    const pressaoFormatada = typeof pressao_ensaio === 'number' ? Math.round(pressao_ensaio) : pressao_ensaio;
 
 
     let resultHTML = `
