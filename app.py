@@ -4,7 +4,7 @@ import geopandas as gpd
 from shapely.geometry import Point
 
 app = Flask(__name__)
-CORS(app, origins=["http://calculoperfil.gabrielvc.com.br/"]) 
+CORS(app, origins=["https://calculoperfil.gabrielvc.com.br", "http://127.0.0.1:5500"])
 
 # ATENÇÃO: Verifique se este caminho está correto para o seu ambiente
 geojson_path = "Regiões.geojson"
