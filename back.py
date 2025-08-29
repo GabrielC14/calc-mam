@@ -6,45 +6,16 @@ from shapely.geometry import Point
 app = Flask(__name__)
 CORS(app)
 
+# ATENÇÃO: Verifique se este caminho está correto para o seu ambiente
 geojson_path = r"C:\Users\Gabriel\Desktop\Calc-Mam\Regiões.geojson"
 gdf = gpd.read_file(geojson_path)
 
 pressao_map = {
-    '1': {
-        2: 350,  # Para 2 pavimentos, região 1.
-        5: 420,  # Para 5 pavimentos, região 1.
-        10: 500,  # Para 10 pavimentos, região 1.
-        20: 600,  # Para 20 pavimentos, região 1.
-        30: 660,  # Para 30 pavimentos, região 1.
-    },
-    '2': {
-        2: 470,  # Para 2 pavimentos, região 2.
-        5: 580,  # Para 5 pavimentos, região 2.
-        10: 680,  # Para 10 pavimentos, região 2.
-        20: 815,  # Para 20 pavimentos, região 2.
-        30: 890,  # Para 30 pavimentos, região 2.
-    },
-    '3': {
-        2: 610,  # Para 2 pavimentos, região 3.
-        5: 750,  # Para 5 pavimentos, região 3.
-        10: 890,  # Para 10 pavimentos, região 3.
-        20: 1060,  # Para 20 pavimentos, região 3
-        30: 1170,  # Para 30 pavimentos, região 3.
-    },
-    '4': {
-        2: 770,  # Para 2 pavimentos, região 4.
-        5: 950,  # Para 5 pavimentos, região 4.
-        10: 1130,  # Para 10 pavimentos, região 4.
-        20: 1350,  # Para 20 pavimentos, região 4.
-        30: 1480,  # Para 30 pavimentos, região 4.
-    },
-    '5': {
-        2: 950,  # Para 2 pavimentos, região 5.
-        5: 1180,  # Para 5 pavimentos, região 5.
-        10: 1400,  # Para 10 pavimentos, região 5.
-        20: 1660,  # Para 20 pavimentos, região 5.
-        30: 1820,  # Para 30 pavimentos, região 5.
-    },
+    '1': {2: 350, 5: 420, 10: 500, 20: 600, 30: 660},
+    '2': {2: 470, 5: 580, 10: 680, 20: 815, 30: 890},
+    '3': {2: 610, 5: 750, 10: 890, 20: 1060, 30: 1170},
+    '4': {2: 770, 5: 950, 10: 1130, 20: 1350, 30: 1480},
+    '5': {2: 950, 5: 1180, 10: 1400, 20: 1660, 30: 1820},
 }
 
 def calcular_pressao(region, pavimentos):
@@ -55,7 +26,8 @@ def calcular_pressao(region, pavimentos):
         if pavimentos_usados:
             return pressao_map[region][pavimentos_usados]
         else:
-            return "Pressão não definida para este número de pavimentos"
+            # Se pavimentos for > 30, usa o valor de 30
+            return pressao_map[region][pavimentos_disponiveis[-1]]
     else:
         return "Região não definida"
 
@@ -63,56 +35,69 @@ def largurafolha(larguratotal, quantidadefol):
     return larguratotal / quantidadefol
 
 def calcular_wx(pressao_ensaio, largurafol, alturafol, lrt):
-    """
-    Limite de tensão: ( Wx )
-    (P * 10^-6 * L * H^2) / (4 * LRT)
-    """
-    return (pressao_ensaio*1e-6*largurafol*alturafol**2)/(4*lrt)
+    return (pressao_ensaio * 1e-6 * largurafol * alturafol**2) / (4 * lrt)
 
 def calcular_jx(pressao_ensaio, largurafol, alturafol, melast):
-    """
-    Limite de flecha: ( Jx )
-    (5*P*10^-6*L*H^4)/(H*2.1943*E)     (P*10^-6*L*H^4)/(1536*E)
-    """
-    return max(((5*pressao_ensaio*1e-6*largurafol*alturafol**4)/(alturafol*2.1943*melast)), ((pressao_ensaio*1e-6*largurafol*alturafol**4)/(1536*melast))) 
+    jx1 = (5 * pressao_ensaio * 1e-6 * largurafol * alturafol**4) / (384 * melast * (alturafol / 175))
+    jx2 = (5 * pressao_ensaio * 1e-6 * largurafol * alturafol**4) / (384 * melast * 20)
+    return max(jx1, jx2)
 
-@app.route('/pressaovento', methods=['POST']) # ta pegando os dados do json pra fazer a pressao
+@app.route('/pressaovento', methods=['POST'])
 def get_wind_pressure():
     data = request.get_json()
-    print(f"Dados recebidos: {data}") # aq ta o print excluir dps
-    latitude = data['latitude'] # mantem
-    longitude = data['longitude'] # mantem
-    pavimentos = int(data['pavimentos']) # mantem 
-    point = Point(longitude, latitude) # mantem
-
+    print(f"Dados recebidos: {data}")
     
+    pressao_ensaio = None
+    response = {}
+    if 'pressao_personalizada' in data and data['pressao_personalizada']:
+        try:
+            pressao_ensaio = float(data['pressao_personalizada'])
+        except (ValueError, TypeError):
+            return jsonify({"error": "Valor de pressão personalizada inválido"}), 400
+    else:
+        try:
+            latitude = data['latitude']
+            longitude = data['longitude']
+            pavimentos = int(data['pavimentos'])
+            point = Point(longitude, latitude)
+        except (KeyError, ValueError) as e:
+            return jsonify({"error": f"Dados faltando ou inválidos: {e}"}), 400
 
-    for _, row in gdf.iterrows():
-        if row['geometry'].contains(point):
-            pressao_ensaio = calcular_pressao(row['pressão_vento'], pavimentos)
-            print(f"Pressão de ensaio calculada: {pressao_ensaio}, tipo: {type(pressao_ensaio)}")
-
-            response = {"pressao_ensaio": pressao_ensaio}
-
-            if 'larguratotal' in data and 'quantidadefol' in data and 'alturafol' in data: # ta pegando do msm json os outros dados que vieram, caso venham, pra fazer o jx e wx
-                larguratotal = int(data['larguratotal'])
-                quantidadefol = int(data['quantidadefol'])
-                alturafol = int(data['alturafol'])
-                lrt = 150 # N/mm²
-                melast = 70000 # MPa
-
-                largurafol = largurafolha(larguratotal, quantidadefol)
-                wx = calcular_wx(pressao_ensaio, largurafol, alturafol, lrt)
-                jx = calcular_jx(pressao_ensaio, largurafol, alturafol, melast)
-                print(f"Wx calculado: {wx}")
-                print(f"Jx calculado: {jx}")
-
-                response.update({ #se tiver dados pro jx e wx ele retorna isso ai
-                    "wx": wx,
-                    "jx": jx
-                })
-            return jsonify(response)
+        region_found = False
+        for _, row in gdf.iterrows():
+            if row['geometry'].contains(point):
+                pressao_ensaio = calcular_pressao(row['pressão_vento'], pavimentos)
+                region_found = True
+                break
         
-    return jsonify({"error": "Ponto fora de todas as regiões"}), 404
+        if not region_found:
+            return jsonify({"error": "Ponto fora de todas as regiões"}), 404
+
+    # Se a pressão foi calculada ou fornecida, prossegue
+    if pressao_ensaio is not None and isinstance(pressao_ensaio, (int, float)):
+        response["pressao_ensaio"] = pressao_ensaio
+        
+        # Calcula Wx e Jx se os dados da esquadria estiverem presentes
+        if 'larguratotal' in data and 'quantidadefol' in data and 'alturafol' in data:
+            try:
+                larguratotal = float(data['larguratotal'])
+                quantidadefol = int(data['quantidadefol'])
+                alturafol = float(data['alturafol'])
+                lrt = 150  # N/mm²
+                melast = 70000  # MPa
+
+                largura_folha = largurafolha(larguratotal, quantidadefol)
+                wx = calcular_wx(pressao_ensaio, largura_folha, alturafol, lrt)
+                jx = calcular_jx(pressao_ensaio, largura_folha, alturafol, melast)
+
+                response.update({"wx": wx, "jx": jx})
+            except (ValueError, TypeError):
+                # Se os dados da esquadria forem inválidos, continua sem wx e jx
+                pass
+        
+        return jsonify(response)
+
+    return jsonify({"error": "Não foi possível determinar a pressão de ensaio"}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)

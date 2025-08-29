@@ -22,13 +22,26 @@
             <input type="number" id="quantidadefolInput" placeholder="Quantidade de folhas">
             <label for="input3">Altura (mm):</label>
             <input type="number" id="alturafolInput" placeholder="Altura da esquadria (mm)">
+            
             <h2 id="titles">Edifício</h2>
-            <label for="input4">Quantidade de pavimentos:</label>
-            <input type="number" id="pavimentosInput" placeholder="Número de pavimentos" />
+            
+            <div class="custom-pressure-toggle">
+                <label for="customPressureCheckbox">Usar pressão personalizada?</label>
+                <input type="checkbox" id="customPressureCheckbox">
+            </div>
 
+            <div id="customPressureSection" style="display: none;">
+                <label for="pressaoPersonalizadaInput">Pressão Personalizada (Pa):</label>
+                <input type="number" id="pressaoPersonalizadaInput" placeholder="Ex: 3000">
+            </div>
+            
+            <div id="locationBasedSection">
+                <label for="input4">Quantidade de pavimentos:</label>
+                <input type="number" id="pavimentosInput" placeholder="Número de pavimentos" />
+            </div>
         </div>
 
-        <div class="map-section">
+        <div class="map-section" id="mapSection">
             <input type="text" id="addressInput" placeholder="Digite o endereço" />
             <button id="searchBtn">Buscar Localização</button>
             <div id="mapid"></div>
@@ -48,7 +61,6 @@
     </div>
     <a href="index-pag2.html" class="info-button">
         <i class="fas fa-info-circle"></i>
-
     </a>
 
     <script src="script.js"></script>

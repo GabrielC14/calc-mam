@@ -47,6 +47,30 @@ body {
     margin-top: 10px;
 }
 
+/* NOVO: Estilo para o toggle de pressão personalizada */
+.custom-pressure-toggle {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.custom-pressure-toggle label {
+    margin-top: 0;
+}
+
+.custom-pressure-toggle input[type="checkbox"] {
+    width: auto;
+    margin-top: 0;
+}
+
+#locationBasedSection {
+    margin-top: 15px;
+}
+#customPressureSection {
+    margin-top: 15px;
+}
+
 .map-section {
     width: 50%;
     padding: 20px;
@@ -88,7 +112,6 @@ button:hover {
     margin-top: 20px;
     width: 25%;
     padding: 20px;
-    border: 1px solid #ccc;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
