@@ -4,10 +4,10 @@ import geopandas as gpd
 from shapely.geometry import Point
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://calculoperfil.gabrielvc.com.br/"]) 
 
 # ATENÇÃO: Verifique se este caminho está correto para o seu ambiente
-geojson_path = r"C:\Users\Gabriel\Desktop\Calc-Mam\Regiões.geojson"
+geojson_path = "Regiões.geojson"
 gdf = gpd.read_file(geojson_path)
 
 pressao_map = {
@@ -98,6 +98,3 @@ def get_wind_pressure():
         return jsonify(response)
 
     return jsonify({"error": "Não foi possível determinar a pressão de ensaio"}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
