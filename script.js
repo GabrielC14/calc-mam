@@ -94,7 +94,7 @@ map.on('click', function(e) {
 });
 
 async function sendToServer(requestData) {
-    const url = "http://127.0.0.1:5000/pressaovento";
+    const url = "https://api.calculoperfil.gabrielvc.com.br/pressaovento";
 
     try {
         const response = await fetch(url, {
