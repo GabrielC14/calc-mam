@@ -98,3 +98,8 @@ def get_wind_pressure():
         return jsonify(response)
 
     return jsonify({"error": "Não foi possível determinar a pressão de ensaio"}), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Rota pro UptimeRobot"""
+    return "Online!", 200
