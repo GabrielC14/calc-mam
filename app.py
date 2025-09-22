@@ -2,13 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import geopandas as gpd
 from shapely.geometry import Point
-import time
-import collections
-import requests
-from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
-CORS(app, origins=["https://calculoperfil.gabrielvc.com.br", "http://127.0.0.1:5500", "https://gabrielvc.com.br"])
+CORS(app, origins=["https://calculoperfil.gabrielvc.com.br", "http://127.0.0.1:5500"])
 
 geojson_path = "Regiões.geojson"
 gdf = gpd.read_file(geojson_path)
@@ -106,50 +102,3 @@ def get_wind_pressure():
 def health_check():
     """Rota pro UptimeRobot"""
     return "Online!", 200
-
-SITES_PARA_MONITORAR = {
-    "croquis": "https://croquis.gabrielvc.com.br",
-    "calculoperfil": "https://calculoperfil.gabrielvc.com.br"
-}
-
-HISTORICO_MAXIMO = 12
-
-status_data = {site_id: collections.deque(maxlen=HISTORICO_MAXIMO) for site_id in SITES_PARA_MONITORAR}
-
-# --- FUNÇÕES DO STATUS CHECKER ---
-def ping_site(url):
-    try:
-        start_time = time.time()
-        response = requests.get(url, timeout=10)
-        end_time = time.time()
-        
-        if response.status_code >= 200 and response.status_code < 300:
-            latencia_ms = round((end_time - start_time) * 1000)
-            return {"status": "online", "ms": latencia_ms}
-        else:
-            return {"status": "error", "ms": -1, "code": response.status_code}
-            
-    except requests.RequestException:
-        return {"status": "offline", "ms": -1}
-
-def atualizar_todos_os_status():
-    print("Iniciando verificação de status de todos os sites...")
-    with app.app_context(): 
-        for site_id, url in SITES_PARA_MONITORAR.items():
-            resultado = ping_site(url)
-            status_data[site_id].append(resultado)
-            print(f" - {url}: {resultado['status']} ({resultado['ms']}ms)")
-    print("Verificação concluída.")
-
-# --- API ENDPOINT DO STATUS CHECKER ---
-@app.route('/status', methods=['GET'])
-def get_status():
-    dados_para_frontend = {site_id: list(historico) for site_id, historico in status_data.items()}
-    return jsonify(dados_para_frontend)
-
-scheduler = BackgroundScheduler(daemon=True)
-scheduler.add_job(atualizar_todos_os_status, 'interval', minutes=1)
-scheduler.start()
-
-print("Realizando a primeira verificação de status ao iniciar...")
-atualizar_todos_os_status()
