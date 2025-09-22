@@ -148,14 +148,11 @@ def get_status():
     return jsonify(dados_para_frontend)
 
 scheduler = BackgroundScheduler(daemon=True)
-
 scheduler.add_job(atualizar_todos_os_status, 'interval', minutes=5)
 scheduler.start()
 
-@app.before_first_request
-def initial_status_check():
-    print("Realizando a primeira verificação de status ao iniciar...")
-    atualizar_todos_os_status()
+print("Realizando a primeira verificação de status ao iniciar...")
+atualizar_todos_os_status()
 
 if __name__ == '__main__':
     app.run(debug=True)
