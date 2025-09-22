@@ -153,6 +153,3 @@ scheduler.start()
 
 print("Realizando a primeira verificação de status ao iniciar...")
 atualizar_todos_os_status()
-
-if __name__ == '__main__':
-    app.run(debug=True)
