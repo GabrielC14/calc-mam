@@ -4,3 +4,5 @@ gunicorn
 geopandas
 shapely
 requests
+base64
+python-dotenv
