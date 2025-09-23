@@ -96,8 +96,9 @@ def now_playing():
 def top_tracks():
     access_token = get_access_token()
     if not access_token: return jsonify({"error": "Auth required"}), 401
+    time_range = request.args.get('time_range', 'short_term')
     headers = {"Authorization": f"Bearer {access_token}"}
-    params = {"time_range": "short_term", "limit": 10}
+    params = {"time_range": time_range, "limit": 10}
     response = requests.get(API_BASE_URL + "me/top/tracks", headers=headers, params=params)
     if response.status_code == 200:
         return jsonify(response.json()["items"])
