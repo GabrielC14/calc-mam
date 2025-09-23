@@ -1,0 +1,16 @@
+# Arquivos de segredos
+.env
+refresh_token.txt
+
+# Pasta de ambiente virtual do Python
+/venv/
+/.venv/
+/env/
+/.env/
+
+# Arquivos compilados do Python
+__pycache__/
+*.pyc
+
+# Outros arquivos de sistema
+.DS_Store

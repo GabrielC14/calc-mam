@@ -2,9 +2,17 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import geopandas as gpd
 from shapely.geometry import Point
+# App Spotify
+from dotenv import load_dotenv
+import os
+from spotify_app.routes import spotify_bp
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["https://calculoperfil.gabrielvc.com.br", "http://127.0.0.1:5500"])
+CORS(app, origins=["https://calculoperfil.gabrielvc.com.br", "http://127.0.0.1:5500", "https://spotify.gabrielvc.com.br"])
+
+app.register_blueprint(spotify_bp)
 
 geojson_path = "Regiões.geojson"
 gdf = gpd.read_file(geojson_path)
